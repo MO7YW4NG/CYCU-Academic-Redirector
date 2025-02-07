@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "CYCU Academic Redirector",
+  "version": "1.0",
+  "description": "Redirects CYCU academic resources.",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "redirect_rules",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  }
+}
