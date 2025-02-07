@@ -9,7 +9,7 @@
 
 ## 使用方法
 
-1. [下載完整壓縮檔](https://github.com/MO7YW4NG/CYCU-Score-Plus/releases)
+1. [下載完整壓縮檔](https://github.com/MO7YW4NG/CYCU-Academic-Redirector/releases)
 
 2. 解壓縮資料夾
 
