@@ -232,5 +232,23 @@
         "main_frame"
       ]
     }
+  },
+  {
+    "id": 14,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "host": "0-www-sciencedirect-com.cylis.lib.cycu.edu.tw"
+        }
+      }
+    },
+    "condition": {
+      "urlFilter": "www.sciencedirect.com",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
   }
 ]
