@@ -1,7 +1,7 @@
 
 <h1 style="text-align:center"><img src="https://i.imgur.com/rwSwinj.png"  height="32"  width="32"/>中原大學學術資源轉址器 Academic Redirector</h1>  
 
-https://github.com/user-attachments/assets/3fa2a97e-ca9f-4ead-9635-100bc2eb4379
+https://github.com/user-attachments/assets/7fbc92a9-3674-4d87-b1fb-873b949e5a3f
 
 ## 介紹
 
