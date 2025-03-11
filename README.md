@@ -15,7 +15,7 @@ https://github.com/user-attachments/assets/7fbc92a9-3674-4d87-b1fb-873b949e5a3f
 
 2. 解壓縮資料夾
 
-3. 匯入至瀏覽器
+3. 匯入至瀏覽器（以Chorme/Edge為例）
 	1. 開啟 **擴充功能管理** 頁面
 	2. 啟用 **開發人員模式（Developer mode）**
 	3. 載入 **未封裝的項目/載入解壓縮**
