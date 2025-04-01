@@ -9,6 +9,10 @@ https://github.com/user-attachments/assets/7fbc92a9-3674-4d87-b1fb-873b949e5a3f
 
 如 IEEE, Springer, ACM, ProQuest 等。
 
+## 狀況排解
+
+* 25/03/28 ACM 資源 CloudFlare 連線逾時狀況回報 (25/04/01 處理完成)
+
 ## 使用方法
 
 1. [下載完整壓縮檔](https://github.com/MO7YW4NG/CYCU-Academic-Redirector/releases)
