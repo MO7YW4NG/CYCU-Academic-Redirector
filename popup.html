@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CYCU Academic Redirector</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f6f8fa;
+      min-width: 260px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin: 18px;
+      padding: 20px 18px 16px 18px;
+    }
+    h3 {
+      text-align: center;
+      color: #2d3a4b;
+      margin-bottom: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #444;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    input[type="text"], input[type="password"] {
+      padding: 8px 10px;
+      margin-top: 4px;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
+      font-size: 15px;
+      background: #f9fafb;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      border: 1.5px solid #3b82f6;
+      outline: none;
+      background: #fff;
+    }
+    button {
+      margin-top: 18px;
+      padding: 10px 0;
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .status {
+      margin-top: 12px;
+      color: #16a34a;
+      text-align: center;
+      font-size: 14px;
+      min-height: 18px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 10px auto;
+      width: 38px;
+      height: 38px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="icon.png" alt="CYCU Logo" class="logo" />
+    <h3>CYCU Academic Redirector</h3>
+    <form id="loginForm" autocomplete="on">
+      <label for="username">Student ID</label>
+      <input type="text" id="username" name="username" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+      <button type="submit">Save</button>
+      <div class="status" id="status"></div>
+    </form>
+    <div class="footer">CYCU Academic Redirector &copy; 2025</div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

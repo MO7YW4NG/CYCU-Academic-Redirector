@@ -250,5 +250,21 @@
         "main_frame"
       ]
     }
+  },
+  {
+    "id": 1001,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "Referer", "operation": "set", "value": "https://cylis.lib.cycu.edu.tw/" },
+        { "header": "Origin", "operation": "set", "value": "https://cylis.lib.cycu.edu.tw" },
+        { "header": "Host", "operation": "set", "value": "sso.lib.cycu.edu.tw" }
+      ]
+    },
+    "condition": {
+      "urlFilter": "sso.lib.cycu.edu.tw/api/cylis",
+      "resourceTypes": ["xmlhttprequest"]
+    }
   }
 ]
