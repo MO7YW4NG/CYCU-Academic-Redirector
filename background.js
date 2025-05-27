@@ -31,7 +31,6 @@ async function loginSSO() {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36 Edg/136.0.0.0",
             "Referer": "https://cylis.lib.cycu.edu.tw/",
             "Host": "sso.lib.cycu.edu.tw",
             "Origin": "https://cylis.lib.cycu.edu.tw",
@@ -95,8 +94,7 @@ if (chrome.alarms) {
 
 // --- AUTO LOGIN ON CYLIS PAGE LOAD ---
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  console.log("Tab updated:", tabId, changeInfo, tab);
-  if (changeInfo.status === 'complete' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo')) {
+  if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo')) {
     loginSSO().then(() => {
       // Redirect to url after login
       chrome.tabs.update(tabId, { url: decodeURIComponent(tab.url.split("url=")[1]) });
