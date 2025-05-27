@@ -92,6 +92,18 @@ if (chrome.alarms) {
     if (alarm.name === "ssoLogin") loginSSO();
   });
 }
+
+// --- AUTO LOGIN ON CYLIS PAGE LOAD ---
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.log("Tab updated:", tabId, changeInfo, tab);
+  if (changeInfo.status === 'complete' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo')) {
+    loginSSO().then(() => {
+      // Redirect to url after login
+      chrome.tabs.update(tabId, { url: decodeURIComponent(tab.url.split("url=")[1]) });
+    });
+  }
+});
+
 // --- MESSAGE HANDLER (for popup/options) ---
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg === "getSSOCookies") {
