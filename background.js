@@ -88,12 +88,22 @@ function scheduleLogin() {
 
 if (chrome.alarms) {
   chrome.alarms.onAlarm.addListener(alarm => {
-    if (alarm.name === "ssoLogin") loginSSO();
+    if (alarm.name === "ssoLogin") {
+      chrome.storage.local.get(["sso_username", "sso_password"], (result) => {
+        if (result.sso_username) USERNAME = result.sso_username;
+        if (result.sso_password) PASSWORD = result.sso_password;
+      });
+      loginSSO();
+    }
   });
 }
 
 // --- AUTO LOGIN ON CYLIS PAGE LOAD ---
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!USERNAME || !PASSWORD) {
+    console.warn("SSO credentials not set.");
+    return;
+  }
   if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo')) {
     loginSSO().then(() => {
       // Redirect to url after login
