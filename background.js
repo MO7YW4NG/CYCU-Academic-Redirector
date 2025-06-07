@@ -5,7 +5,6 @@ const SSO_URL = "https://sso.lib.cycu.edu.tw/api/cylis";
 const SSO_COOKIE_DOMAIN = ".lib.cycu.edu.tw";
 let USERNAME = "";
 let PASSWORD = "";
-const LOGIN_INTERVAL_MINUTES = 30; // How often to refresh login
 
 // Load script for encoding credentials
 importScripts("decrypt.js");
@@ -14,7 +13,6 @@ importScripts("decrypt.js");
 chrome.storage.local.get(["sso_username", "sso_password"], (result) => {
   if (result.sso_username) USERNAME = result.sso_username;
   if (result.sso_password) PASSWORD = result.sso_password;
-  scheduleLogin();
 });
 
 // --- LOGIN FUNCTION ---
@@ -67,55 +65,16 @@ async function loginSSO() {
     }
 }
 
-// --- COOKIE RETRIEVAL ---
-function getSSOCookies(callback) {
-  if (!chrome.cookies) {
-    console.warn("Cookie API not available");
-    return;
-  }
-  chrome.cookies.getAll({ domain: SSO_COOKIE_DOMAIN }, function(cookies) {
-    callback(cookies);
-  });
-}
-
-// --- SESSION REFRESH ---
-function scheduleLogin() {
-  loginSSO();
-  if (chrome.alarms) {
-    chrome.alarms.create("ssoLogin", { periodInMinutes: LOGIN_INTERVAL_MINUTES });
-  }
-}
-
-if (chrome.alarms) {
-  chrome.alarms.onAlarm.addListener(alarm => {
-    if (alarm.name === "ssoLogin") {
-      chrome.storage.local.get(["sso_username", "sso_password"], (result) => {
-        if (result.sso_username) USERNAME = result.sso_username;
-        if (result.sso_password) PASSWORD = result.sso_password;
-      });
-      loginSSO();
-    }
-  });
-}
-
 // --- AUTO LOGIN ON CYLIS PAGE LOAD ---
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!USERNAME || !PASSWORD) {
     console.warn("SSO credentials not set.");
     return;
   }
-  if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo')) {
+  if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo') && tab.url.includes("url=")) {
     loginSSO().then(() => {
       // Redirect to url after login
       chrome.tabs.update(tabId, { url: decodeURIComponent(tab.url.split("url=")[1]) });
     });
-  }
-});
-
-// --- MESSAGE HANDLER (for popup/options) ---
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg === "getSSOCookies") {
-    getSSOCookies(sendResponse);
-    return true; // async response
   }
 });
