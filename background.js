@@ -2,6 +2,7 @@
 // CYCU SSO Auto-login and Cookie Retriever
 // --- CONFIG ---
 const SSO_URL = "https://sso.lib.cycu.edu.tw/api/cylis";
+const CONNECT_URL = "https://sso.lib.cycu.edu.tw/api/connect";
 const SSO_COOKIE_DOMAIN = ".lib.cycu.edu.tw";
 let USERNAME = "";
 let PASSWORD = "";
@@ -21,21 +22,29 @@ async function loginSSO() {
     console.warn("SSO credentials not set.");
     return;
   }
-    // Encode credentials as required by SSO
-    const encodedUsername = strencode(USERNAME);
-    const encodedPassword = strencode(PASSWORD);
 
-    let response = await fetch(SSO_URL, {
+    // Fetch CSRF token from the connect URL
+    let response = await fetch(CONNECT_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Referer": "https://cylis.lib.cycu.edu.tw/",
-            "Host": "sso.lib.cycu.edu.tw",
-            "Origin": "https://cylis.lib.cycu.edu.tw",
-        },
+        keepalive: true,
+        referrer: "https://cylis.lib.cycu.edu.tw/",
+        credentials: "include"
+    });
+    // Check if response is ok
+    if (!response.ok) throw new Error("Failed to fetch CSRF token: " + response.status + " " + response.statusText);
+    var data = await response.json();
+    let token = data.token;
+    console.log("CSRF token fetched:", token);
+    // Encode credentials as required by SSO
+    const encodedUsername = strencode(USERNAME, token);
+    const encodedPassword = strencode(PASSWORD, token);
+    // Connect to SSO service
+    response = await fetch(SSO_URL, {
+        method: "POST",
         body: new URLSearchParams({
             "username": encodedUsername,
-            "password": encodedPassword
+            "password": encodedPassword,
+            "token": token,
         }),
         keepalive: true,
         referrer: "https://cylis.lib.cycu.edu.tw/",
@@ -43,23 +52,24 @@ async function loginSSO() {
     });
     // print error message if response is not ok
     if (!response.ok) throw new Error("Login failed: "+ response.status + " " + response.statusText);
-    const data = await response.json();
+    data = await response.json();
     if (data.login) {
         // Save access token
         chrome.storage.local.set({cycuLibToken: data.access});
         
-        response = await fetch("https://cylis.lib.cycu.edu.tw/patroninfo", {
+        response = await fetch("https://cylis.lib.cycu.edu.tw/patroninfo~S1?/", {
             method: "POST",
             body: new URLSearchParams({
                 "extpatid": data.patronlogin ? "" : USERNAME,
                 "extpatpw": data.patronlogin ? "" : PASSWORD,
+                "SUBMIT": "送出/SUBMIT",
                 "code": data.patronlogin ? USERNAME: "",
                 "pin": data.patronlogin ? PASSWORD : "",
             }),
+            referrer: "https://cylis.lib.cycu.edu.tw/patroninfo~S1?",
         })
         if (!response.ok) throw new Error("Failed to fetch patron info: " + response.status + " " + response.statusText);
-        console.log("SSO login successful");
-      // Optionally, store token or update state
+        console.log("SSO login successful:", await response.text());
     } else {
         console.warn("SSO login unsuccessful");
     }
