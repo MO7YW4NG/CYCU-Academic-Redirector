@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (typeof result.store_plaintext === 'boolean') {
       storePlaintextCheckbox.checked = result.store_plaintext;
+      masterInput.disabled = !!result.store_plaintext;
     }
     // If plaintext mode is on, prefill for convenience
     if (result.store_plaintext && result.sso_username) {
@@ -25,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (result.store_plaintext && result.sso_password) {
       document.getElementById('password').value = result.sso_password || '';
     }
+  });
+
+  // Toggle master field enable/disable with checkbox
+  storePlaintextCheckbox.addEventListener('change', () => {
+    masterInput.disabled = storePlaintextCheckbox.checked;
   });
 
   // Save credentials (encrypt to local, cache plaintext in session for current browser session)
