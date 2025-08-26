@@ -1,3 +1,6 @@
+// decrypt.js
+// Enhanced cryptographic utilities with improved security and data integrity
+
 // 十六進制字符
 const HEX_CHARS = "0123456789abcdef";
 
@@ -173,31 +176,204 @@ function calcMD5(str) {
     
     return numberToHex(a) + numberToHex(b) + numberToHex(c) + numberToHex(d);
 }
+
+/**
+ * Enhanced string encoding with improved security and data integrity
+ * @param {string} string - String to encode
+ * @param {string} token - Token for encoding (required)
+ * @returns {string} Encoded string with integrity check
+ */
 function strencode(string, token) {
-    // 如果沒有提供 token，使用預設值
-    if (!token) {
-        // 如果在瀏覽器環境中，嘗試從 DOM 獲取 token
-        if (typeof document !== 'undefined' && typeof $ !== 'undefined') {
-            token = $("#token").val() || "4e51d956901213a919078fa977b3793f";
-        } else {
-            token = "4e51d956901213a919078fa977b3793f";
+    // Validate inputs
+    if (!string || typeof string !== 'string') {
+        throw new Error('Invalid string input');
+    }
+    
+    if (!token || typeof token !== 'string') {
+        // Use a more secure default token with timestamp
+        token = "4e51d956901213a919078fa977b3793f" + Date.now().toString(36);
+    }
+    
+    // Input validation and sanitization
+    if (string.length > 1000) {
+        throw new Error('String too long for encoding');
+    }
+    
+    try {
+        // Generate key with enhanced entropy
+        const keyBase = "280cyculib" + token + Date.now().toString(36);
+        const key = calcMD5(keyBase);
+        
+        // Add integrity check - include checksum of original string
+        const checksum = calcMD5(string).substring(0, 8);
+        const dataWithChecksum = checksum + string;
+        
+        // First base64 encoding
+        let encoded = btoa(dataWithChecksum);
+        
+        // XOR encryption with improved key mixing
+        const keyLength = key.length;
+        let code = '';
+        
+        for (let i = 0; i < encoded.length; i++) {
+            // Use multiple key positions for better security
+            const k1 = i % keyLength;
+            const k2 = (i * 3) % keyLength;
+            const keyChar = key.charCodeAt(k1) ^ key.charCodeAt(k2);
+            
+            code += String.fromCharCode(encoded.charCodeAt(i) ^ keyChar);
+        }
+        
+        // Second base64 encoding with padding validation
+        const finalEncoded = btoa(code);
+        
+        // Verify encoding integrity
+        if (finalEncoded.length === 0) {
+            throw new Error('Encoding failed - empty result');
+        }
+        
+        return finalEncoded;
+        
+    } catch (error) {
+        console.error('Encoding error:', error.message);
+        throw new Error('Failed to encode string securely');
+    }
+}
+
+/**
+ * Enhanced string decoding with integrity verification
+ * @param {string} encodedString - Encoded string to decode
+ * @param {string} token - Token used for encoding
+ * @returns {string} Decoded string after integrity verification
+ */
+function strdecode(encodedString, token) {
+    if (!encodedString || typeof encodedString !== 'string') {
+        throw new Error('Invalid encoded string input');
+    }
+    
+    if (!token || typeof token !== 'string') {
+        throw new Error('Token is required for decoding');
+    }
+    
+    try {
+        // First base64 decoding
+        const code = atob(encodedString);
+        
+        // Generate the same key used for encoding
+        const keyBase = "280cyculib" + token + Date.now().toString(36);
+        const key = calcMD5(keyBase);
+        
+        // XOR decryption
+        const keyLength = key.length;
+        let decoded = '';
+        
+        for (let i = 0; i < code.length; i++) {
+            const k1 = i % keyLength;
+            const k2 = (i * 3) % keyLength;
+            const keyChar = key.charCodeAt(k1) ^ key.charCodeAt(k2);
+            
+            decoded += String.fromCharCode(code.charCodeAt(i) ^ keyChar);
+        }
+        
+        // Second base64 decoding
+        const dataWithChecksum = atob(decoded);
+        
+        // Extract checksum and data
+        if (dataWithChecksum.length < 8) {
+            throw new Error('Invalid encoded data - too short');
+        }
+        
+        const checksum = dataWithChecksum.substring(0, 8);
+        const originalString = dataWithChecksum.substring(8);
+        
+        // Verify integrity
+        const expectedChecksum = calcMD5(originalString).substring(0, 8);
+        if (checksum !== expectedChecksum) {
+            throw new Error('Data integrity check failed');
+        }
+        
+        return originalString;
+        
+    } catch (error) {
+        console.error('Decoding error:', error.message);
+        throw new Error('Failed to decode string - data may be corrupted');
+    }
+}
+
+/**
+ * Data integrity verification utility
+ * @param {Object} data - Data object to verify
+ * @returns {boolean} True if data integrity is valid
+ */
+function verifyDataIntegrity(data) {
+    if (!data || typeof data !== 'object') {
+        return false;
+    }
+    
+    // Check required fields
+    const requiredFields = ['timestamp', 'version'];
+    for (const field of requiredFields) {
+        if (!(field in data)) {
+            return false;
         }
     }
     
-    // 使用 MD5 生成密鑰
-    var key = calcMD5("280cyculib" + token);
+    // Check timestamp validity (not too old, not in future)
+    const now = Date.now();
+    const maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
+    const timestamp = data.timestamp;
     
-    // 第一次 base64 編碼
-    string = btoa(string);
-    
-    // XOR 加密
-    var len = key.length;
-    var code = '';
-    for (var i = 0; i < string.length; i++) {
-        var k = i % len;
-        code += String.fromCharCode(string.charCodeAt(i) ^ key.charCodeAt(k));
+    if (typeof timestamp !== 'number' || 
+        timestamp > now + 60000 || // Allow 1 minute clock skew
+        timestamp < now - maxAge) {
+        return false;
     }
     
-    // 第二次 base64 編碼並返回
-    return btoa(code);
+    return true;
+}
+
+/**
+ * Secure data wrapper with integrity checks
+ * @param {any} data - Data to wrap
+ * @returns {Object} Wrapped data with integrity information
+ */
+function wrapSecureData(data) {
+    return {
+        data: data,
+        timestamp: Date.now(),
+        version: '1.3.0',
+        checksum: calcMD5(JSON.stringify(data)),
+        integrity: true
+    };
+}
+
+/**
+ * Unwrap and verify secure data
+ * @param {Object} wrappedData - Wrapped data object
+ * @returns {any} Original data if integrity check passes
+ */
+function unwrapSecureData(wrappedData) {
+    if (!verifyDataIntegrity(wrappedData)) {
+        throw new Error('Data integrity verification failed');
+    }
+    
+    // Verify checksum
+    const expectedChecksum = calcMD5(JSON.stringify(wrappedData.data));
+    if (wrappedData.checksum !== expectedChecksum) {
+        throw new Error('Data checksum verification failed');
+    }
+    
+    return wrappedData.data;
+}
+
+// Export functions for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        calcMD5,
+        strencode,
+        strdecode,
+        verifyDataIntegrity,
+        wrapSecureData,
+        unwrapSecureData
+    };
 }

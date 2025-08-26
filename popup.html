@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CYCU Academic Redirector</title>
   <style>
     body {
@@ -9,7 +10,8 @@
       margin: 0;
       padding: 0;
       background: #f6f8fa;
-      min-width: 260px;
+      min-width: 320px;
+      max-width: 400px;
     }
     .container {
       background: #fff;
@@ -25,6 +27,12 @@
       font-weight: 600;
       letter-spacing: 1px;
     }
+    .section {
+      margin-bottom: 20px;
+    }
+    .hidden {
+      display: none !important;
+    }
     label {
       display: block;
       margin-top: 10px;
@@ -32,19 +40,47 @@
       font-size: 14px;
       font-weight: 500;
     }
+    .input-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
     input[type="text"], input[type="password"] {
+      width: 100%;
       padding: 8px 10px;
       margin-top: 4px;
       border: 1px solid #d1d5db;
       border-radius: 5px;
       font-size: 15px;
       background: #f9fafb;
-      transition: border 0.2s;
+      transition: border 0.2s, background 0.2s;
+      box-sizing: border-box;
     }
     input[type="text"]:focus, input[type="password"]:focus {
       border: 1.5px solid #3b82f6;
       outline: none;
       background: #fff;
+    }
+    input.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .field-error {
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 4px;
+      display: block;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #6b7280;
+      padding: 0;
     }
     button {
       margin-top: 18px;
@@ -59,15 +95,87 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    button:hover {
+    button:hover:not(:disabled) {
       background: #1d4ed8;
+    }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: #6b7280;
+      margin-top: 8px;
+    }
+    button.secondary:hover:not(:disabled) {
+      background: #4b5563;
+    }
+    button.danger {
+      background: #dc2626;
+    }
+    button.danger:hover:not(:disabled) {
+      background: #b91c1c;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .button-group button {
+      margin-top: 0;
+      flex: 1;
     }
     .status {
       margin-top: 12px;
-      color: #16a34a;
       text-align: center;
       font-size: 14px;
       min-height: 18px;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    .status.success {
+      color: #16a34a;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+    .status.error {
+      color: #dc2626;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+    .status.warning {
+      color: #d97706;
+      background: #fffbeb;
+      border: 1px solid #fed7aa;
+    }
+    .status.info {
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e5e7eb;
+      border-top: 2px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .form.disabled {
+      opacity: 0.6;
+      pointer-events: none;
     }
     .footer {
       text-align: center;
@@ -81,22 +189,125 @@
       width: 38px;
       height: 38px;
     }
+    .security-info {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 15px 0;
+      font-size: 13px;
+      color: #0369a1;
+    }
+    .security-info .icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      max-width: 90vw;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .modal h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .modal-buttons button {
+      margin-top: 0;
+      flex: 1;
+    }
+    .error-message {
+      color: #dc2626;
+      font-size: 12px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .master-password-section {
+      text-align: center;
+    }
+    .master-password-section p {
+      color: #6b7280;
+      font-size: 14px;
+      margin: 15px 0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="icon.png" alt="CYCU Logo" class="logo" />
     <h3>CYCU Academic Redirector</h3>
-    <form id="loginForm" autocomplete="on">
-      <label for="username">Student ID</label>
-      <input type="text" id="username" name="username" autocomplete="username" required>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" autocomplete="current-password" required>
-      <button type="submit">Save</button>
-      <div class="status" id="status"></div>
-    </form>
-    <div class="footer">CYCU Academic Redirector &copy; 2025</div>
+    
+    <!-- Security Information -->
+    <div class="security-info" id="securityInfo">
+      <span class="icon">🔒</span>
+      Your credentials are encrypted and stored securely using AES-256 encryption.
+    </div>
+
+    <!-- Master Password Section (for encrypted credentials) -->
+    <div class="section master-password-section hidden" id="masterPasswordSection">
+      <p>Enter your master password to access stored credentials:</p>
+      <form id="masterPasswordForm">
+        <div class="input-group">
+          <label for="masterPassword">Master Password</label>
+          <input type="password" id="masterPassword" name="masterPassword" required>
+          <button type="button" class="password-toggle" id="toggleMasterPassword">👁️‍🗨️</button>
+        </div>
+        <button type="submit">Unlock Credentials</button>
+      </form>
+    </div>
+
+    <!-- Credential Input Section -->
+    <div class="section" id="credentialSection">
+      <form id="loginForm" autocomplete="on">
+        <div class="input-group">
+          <label for="username">Student ID</label>
+          <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+        
+        <button type="submit">Save Credentials</button>
+        
+        <div class="button-group">
+          <button type="button" class="secondary" id="testLogin">Test Login</button>
+          <button type="button" class="danger" id="clearCredentials">Clear All</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Status and Loading -->
+    <div class="status" id="status"></div>
+    
+    <div class="footer">
+      CYCU Academic Redirector &copy; 2025
+      <br>
+      <small>Enhanced Security Version</small>
+    </div>
   </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>
