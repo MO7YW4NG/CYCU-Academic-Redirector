@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CYCU Academic Redirector",
-  "version": "1.3",
+  "version": "1.5",
   "description": "Redirects CYCU academic resources.",
   "permissions": [
     "storage",
@@ -9,8 +9,13 @@
     "declarativeNetRequest"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://sso.lib.cycu.edu.tw/*",
+    "https://cylis.lib.cycu.edu.tw/*",
+    "https://*.lib.cycu.edu.tw/*"
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; default-src 'self'"
+  },
   "icons": {
     "16": "icon.png",
     "48": "icon.png",

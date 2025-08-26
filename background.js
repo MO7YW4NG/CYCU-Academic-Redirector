@@ -10,10 +10,19 @@ let PASSWORD = "";
 // Load script for encoding credentials
 importScripts("decrypt.js");
 
-// Load credentials from storage
-chrome.storage.local.get(["sso_username", "sso_password"], (result) => {
+// Load credentials from session storage (plaintext only for current session)
+chrome.storage.session.get(["sso_username", "sso_password"], (result) => {
   if (result.sso_username) USERNAME = result.sso_username;
   if (result.sso_password) PASSWORD = result.sso_password;
+  // Fallback: if session empty and user enabled plaintext storage, read from local
+  if ((!USERNAME || !PASSWORD)) {
+    chrome.storage.local.get(["store_plaintext", "sso_username", "sso_password"], (localRes) => {
+      if (localRes.store_plaintext) {
+        if (localRes.sso_username) USERNAME = localRes.sso_username;
+        if (localRes.sso_password) PASSWORD = localRes.sso_password;
+      }
+    });
+  }
 });
 
 // --- LOGIN FUNCTION ---
