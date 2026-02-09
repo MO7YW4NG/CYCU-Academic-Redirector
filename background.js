@@ -90,9 +90,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     console.warn("SSO credentials not set.");
     return;
   }
-  if (changeInfo.status === 'loading' && tab.url && tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo') && tab.url.includes("url=")) {
+  if (changeInfo.status === 'loading' && tab.url && tab.url.includes("url=") &&
+      (tab.url.startsWith('https://cylis.lib.cycu.edu.tw/patroninfo') ||
+       tab.url.startsWith('https://cylis.lib.cycu.edu.tw/wamvalidate'))) {
     loginSSO().then(() => {
-      // Redirect to url after login
       chrome.tabs.update(tabId, { url: decodeURIComponent(tab.url.split("url=")[1]) });
     });
   }

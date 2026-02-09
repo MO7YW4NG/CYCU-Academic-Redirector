@@ -11,7 +11,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.lawbank.com.tw",
+      "requestDomains": ["www.lawbank.com.tw"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -29,7 +29,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.airitilibrary.com",
+      "requestDomains": ["www.airitilibrary.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -47,7 +47,7 @@
       }
     },
     "condition": {
-      "urlFilter": "dl.acm.org",
+      "requestDomains": ["dl.acm.org"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -65,7 +65,7 @@
       }
     },
     "condition": {
-      "urlFilter": "brill.com",
+      "requestDomains": ["brill.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -83,7 +83,7 @@
       }
     },
     "condition": {
-      "urlFilter": "research.ebsco.com",
+      "requestDomains": ["research.ebsco.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -101,7 +101,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.emerald.com",
+      "requestDomains": ["www.emerald.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -119,7 +119,7 @@
       }
     },
     "condition": {
-      "urlFilter": "ieeexplore.ieee.org",
+      "requestDomains": ["ieeexplore.ieee.org"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -137,7 +137,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.karger.com",
+      "requestDomains": ["www.karger.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -155,7 +155,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.nature.com",
+      "requestDomains": ["www.nature.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -173,7 +173,7 @@
       }
     },
     "condition": {
-      "urlFilter": "ebookcentral.proquest.com",
+      "requestDomains": ["ebookcentral.proquest.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -191,7 +191,7 @@
       }
     },
     "condition": {
-      "urlFilter": "link.springer.com",
+      "requestDomains": ["link.springer.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -209,7 +209,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.taylorfrancis.com",
+      "requestDomains": ["www.taylorfrancis.com"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -227,7 +227,7 @@
       }
     },
     "condition": {
-      "urlFilter": "jumper.lib.cycu.edu.tw",
+      "requestDomains": ["jumper.lib.cycu.edu.tw"],
       "resourceTypes": [
         "main_frame"
       ]
@@ -245,7 +245,7 @@
       }
     },
     "condition": {
-      "urlFilter": "www.sciencedirect.com",
+      "requestDomains": ["www.sciencedirect.com"],
       "resourceTypes": [
         "main_frame"
       ]
